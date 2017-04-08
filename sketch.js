@@ -1,11 +1,9 @@
 var showImg;
 var img = new Image();
-img.src = 'Tiger.jpg';
-var positionOnCanvas;
+img.src = './Image/2.png';
 var rows,cols;
 var grid = [];
 var originsizeOfGrid;
-var findY, findX;//标记鼠标停留在那个格子上
 
 
 function Grid(originsizeOfGrid,startX,startY){
@@ -16,11 +14,14 @@ function Grid(originsizeOfGrid,startX,startY){
 }
 
 function setup() {
-	createCanvas(windowWidth, windowHeight);
+	//createCanvas(windowWidth, windowHeight);
 	showImg = document.getElementById("showImg");
 	originsizeOfGrid = {w:30,h:30};
-	rows = showImg.height / originsizeOfGrid.w;
-	cols = showImg.width / originsizeOfGrid.h;
+	rows = img.height / originsizeOfGrid.w;
+	cols = img.width / originsizeOfGrid.h;
+
+	console.log("showImg.height = " + img.height);
+	console.log("showImg.width = " + img.width);
 	
 	for(var i = 0; i < rows; i++){
 		grid[i] = [];
@@ -32,11 +33,13 @@ function setup() {
 
 function draw() {	
 	clear();
-    if (showImg.getContext) {
+     if (showImg.getContext) {
 		var ctx = showImg.getContext('2d');
+		ctx.canvas.width =  img.width;
+		ctx.canvas.height = img.height;
 		drawImg(ctx);
 		drawLine(ctx);	   
-       }
+    }
 }
 
 function drawImg(ctx){
@@ -104,44 +107,19 @@ function drawLine(ctx){
 	ctx.stroke();
 }
 
-window.onmousemove = function(event){ 
-    var canvas = event.target;  
-    positionOnCanvas = getPointOnCanvas(canvas, event.pageX, event.pageY); 
-	whichGrid();
-}
-
-function getPointOnCanvas(canvas, x, y) {  
-    var box = canvas.getBoundingClientRect();  
-    return { x: x - box.left * (canvas.width  / box.width), 
-			 y: y - box.top  * (canvas.height / box.height)};  
-}
-
-function whichGrid(){
-	var x = positionOnCanvas.x, y = positionOnCanvas.y;	
-	var w = 0, h = 0;
-	
-	for(var i = 0; i < rows; i++){
-		for(findY = 0; findY < cols; findY++){
-			if(x < grid[i][findY].startX) break;
-		}
-		if(findY != cols) break;
-	}
-	findY = findY - 1;
-
-	for(var j = 0; j < cols; j++){
-		for(findX = 0; findX < rows; findX++){
-			if(y < grid[findX][j].startY) break;
-		}
-		if(findX != rows) break;
-	}
-	findX = findX -1;
-}
-
 function mousePressed(){
-	changeGridSize();
+	
+	var changed = [-1, 1, -2, 2, 0.5, -0.5];
+	for(var i = 0; i < rows; i++) {
+		for(var j = 0; j < cols; j++) {
+			var index = Math.floor((Math.random()*10) % changed.length);
+			console.log("index = " + index);
+			changeGridSize(i, j, changed[index]);
+		}
+	}
 } 
 
-function changeGridSize(){
-	grid[findX][findY].w = grid[findX][findY].w + 1;
-	grid[findX][findY].h = grid[findX][findY].h + 1;
+function changeGridSize(i, j, changed){
+	grid[i][j].w = grid[i][j].w + changed;
+	grid[i][j].h = grid[i][j].h + changed;
 }
