@@ -16,7 +16,7 @@ img.addEventListener('load', function() {
   setup();
   draw();
 }, false);
-img.src = './Image/1.jpg';
+img.src = './Image/Tiger.jpg';
 
 document.getElementById('showImg').addEventListener('click', function () {
 	changeGridSize();
