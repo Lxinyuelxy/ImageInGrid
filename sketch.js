@@ -146,9 +146,15 @@ function mousePressed(){
 			console.log("Grid["+i+"]["+j+"].w = " + grid[i][j]. w);
 		}
 	}
+	to_image();
 } 
 
 function changeGridSize(i, j, changed){
 	grid[i][j].w = grid[i][j].w + changed;
 	grid[i][j].h = grid[i][j].h + changed;
+}
+
+function to_image() {
+	var canvas = document.getElementById("showImg");
+	Canvas2Image.saveAsPNG(canvas, imgWidth, imgHeight);
 }
