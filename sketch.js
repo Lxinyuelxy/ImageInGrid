@@ -1,10 +1,10 @@
 var showImg;
 var img = new Image();
-img.src = './Image/2.png';
+img.src = './Image/6.jpg';
+var imgWidth, imgHeight;
 var rows,cols;
 var grid = [];
-var originsizeOfGrid;
-
+var sideOfGrid;
 
 function Grid(originsizeOfGrid,startX,startY){
 	this.w = originsizeOfGrid.w;
@@ -14,21 +14,25 @@ function Grid(originsizeOfGrid,startX,startY){
 }
 
 function setup() {
-	//createCanvas(windowWidth, windowHeight);
 	showImg = document.getElementById("showImg");
-	originsizeOfGrid = {w:30,h:30};
-	rows = img.height / originsizeOfGrid.w;
-	cols = img.width / originsizeOfGrid.h;
-
-	console.log("showImg.height = " + img.height);
-	console.log("showImg.width = " + img.width);
+	sideOfGrid = 30;
+	imgWidth = img.width;
+	imgHeight = img.height;
+	rows = Math.ceil(imgHeight / sideOfGrid);
+	cols = Math.ceil(imgWidth / sideOfGrid);
 	
 	for(var i = 0; i < rows; i++){
 		grid[i] = [];
 		for(var j = 0; j < cols; j++){
-			grid[i][j] = new Grid(originsizeOfGrid,0,0);
+			var originsizeOfGrid = getOriginSizeOfGrid(i, j);
+			grid[i][j] = new Grid(originsizeOfGrid, 0, 0);
 		}
 	}
+
+	console.log("showImg.height = " + img.height);
+	console.log("showImg.width = " + img.width);
+	console.log("rows = " + rows);
+	console.log("cols = " + cols);
 }
 
 function draw() {	
@@ -42,21 +46,23 @@ function draw() {
     }
 }
 
-function drawImg(ctx){
+function drawImg(ctx) {
 	var w = 0, h = 0;
-	for(var i = 0; i < rows; i++){
-		for(var j = 0; j < cols; j++){
-			if(0 == j){
+	for(var i = 0; i < rows; i++) {
+		for(var j = 0; j < cols - 1; j++) {
+			if(0 === j) {
 				w = 0;
-			}else{
+			}
+			else {
 				w = w + grid[i][j-1].w;
 			}
 			grid[i][j].startX = w;
 		}
+		grid[i][cols - 1].startX = imgWidth - grid[i][cols - 1].w;
 	}
 		  
 	for(var j = 0; j < cols; j++){
-		for(var i = 0; i < rows; i++){		
+		for(var i = 0; i < rows - 1; i++){		
 			if(0 == i){
 				h = 0;
 			}else{
@@ -64,25 +70,47 @@ function drawImg(ctx){
 			}
 			grid[i][j].startY = h;
 		}
+		grid[rows - 1][j].startY = imgHeight - grid[rows - 1][j].h;
 	}
 	
 	var originStartX = 0, originstartY = 0;
 	for(var i = 0; i < rows; i++){
 		originStartX = 0;
 		for(var j = 0; j < cols; j++){
-			ctx.drawImage(img, 
-			originStartX, 
-			originstartY, 
-			originsizeOfGrid.w, 
-			originsizeOfGrid.h, 
-			grid[i][j].startX, 
-			grid[i][j].startY,
-			grid[i][j].w,			
-			grid[i][j].h);
+			var originsizeOfGrid = getOriginSizeOfGrid(i, j);
+
+			ctx.drawImage(
+				img, 
+				originStartX, 
+				originstartY, 
+				originsizeOfGrid.w, 
+				originsizeOfGrid.h, 
+				grid[i][j].startX, 
+				grid[i][j].startY,
+				grid[i][j].w,			
+				grid[i][j].h);
+
 			originStartX = originStartX + originsizeOfGrid.w;
 		}
 		originstartY = originstartY + originsizeOfGrid.h;
 	}
+}
+
+function getOriginSizeOfGrid(i, j) {
+	if(i === rows-1 && j === cols-1)
+		return {
+			w: imgWidth % sideOfGrid, 
+			h: imgHeight % sideOfGrid };
+	if(i === rows-1) 
+		return {
+			w: sideOfGrid, 
+			h: imgHeight % sideOfGrid };
+	if(j == cols - 1)
+		return {
+			w: imgWidth % sideOfGrid,
+			h: sideOfGrid };
+	else
+		return { w: sideOfGrid, h: sideOfGrid };
 }
 
 function drawLine(ctx){
@@ -113,8 +141,9 @@ function mousePressed(){
 	for(var i = 0; i < rows; i++) {
 		for(var j = 0; j < cols; j++) {
 			var index = Math.floor((Math.random()*10) % changed.length);
-			console.log("index = " + index);
 			changeGridSize(i, j, changed[index]);
+
+			console.log("Grid["+i+"]["+j+"].w = " + grid[i][j]. w);
 		}
 	}
 } 
