@@ -1,6 +1,4 @@
 var showImg;
-var img = new Image();
-img.src = './Image/6.jpg';
 var imgWidth, imgHeight;
 var rows,cols;
 var grid = [];
@@ -12,6 +10,18 @@ function Grid(originsizeOfGrid,startX,startY){
 	this.startX = startX;
 	this.startY = startY;
 }
+
+var img = new Image();
+img.addEventListener('load', function() {
+  setup();
+  draw();
+}, false);
+img.src = './Image/1.jpg';
+
+document.getElementById('showImg').addEventListener('click', function () {
+	changeGridSize();
+	draw();
+}, false);
 
 function setup() {
 	showImg = document.getElementById("showImg");
@@ -29,14 +39,13 @@ function setup() {
 		}
 	}
 
-	console.log("showImg.height = " + img.height);
-	console.log("showImg.width = " + img.width);
-	console.log("rows = " + rows);
-	console.log("cols = " + cols);
+	// console.log("showImg.height = " + img.height);
+	// console.log("showImg.width = " + img.width);
+	// console.log("rows = " + rows);
+	// console.log("cols = " + cols);
 }
 
 function draw() {	
-	clear();
      if (showImg.getContext) {
 		var ctx = showImg.getContext('2d');
 		ctx.canvas.width =  img.width;
@@ -96,23 +105,6 @@ function drawImg(ctx) {
 	}
 }
 
-function getOriginSizeOfGrid(i, j) {
-	if(i === rows-1 && j === cols-1)
-		return {
-			w: imgWidth % sideOfGrid, 
-			h: imgHeight % sideOfGrid };
-	if(i === rows-1) 
-		return {
-			w: sideOfGrid, 
-			h: imgHeight % sideOfGrid };
-	if(j == cols - 1)
-		return {
-			w: imgWidth % sideOfGrid,
-			h: sideOfGrid };
-	else
-		return { w: sideOfGrid, h: sideOfGrid };
-}
-
 function drawLine(ctx){
 	ctx.strokeStyle = "rgba(255,255,255,0.3)";
 	ctx.beginPath();
@@ -135,26 +127,52 @@ function drawLine(ctx){
 	ctx.stroke();
 }
 
-function mousePressed(){
-	
+function getOriginSizeOfGrid(i, j) {
+	if (imgWidth % sideOfGrid === 0 && imgHeight % sideOfGrid === 0) {
+		return { w: sideOfGrid, h: sideOfGrid };
+	}
+	else if (imgWidth % sideOfGrid === 0) {
+		if(i === rows-1) 
+			return {
+				w: sideOfGrid, 
+				h: imgHeight % sideOfGrid };
+		else
+			return { w: sideOfGrid, h: sideOfGrid };
+	}
+	else if (imgHeight % sideOfGrid === 0) {
+		if(j == cols - 1)
+			return {
+				w: imgWidth % sideOfGrid,
+				h: sideOfGrid };
+		else
+			return { w: sideOfGrid, h: sideOfGrid };
+	}
+	else {
+		if(i === rows-1 && j === cols-1)
+			return {
+				w: imgWidth % sideOfGrid, 
+				h: imgHeight % sideOfGrid };
+		if(i === rows-1) 
+			return {
+				w: sideOfGrid, 
+				h: imgHeight % sideOfGrid };
+		if(j == cols - 1)
+			return {
+				w: imgWidth % sideOfGrid,
+				h: sideOfGrid };
+		else
+			return { w: sideOfGrid, h: sideOfGrid };
+	}	
+}
+
+function changeGridSize(){
 	var changed = [-1, 1, -2, 2, 0.5, -0.5];
 	for(var i = 0; i < rows; i++) {
 		for(var j = 0; j < cols; j++) {
 			var index = Math.floor((Math.random()*10) % changed.length);
-			changeGridSize(i, j, changed[index]);
-
-			console.log("Grid["+i+"]["+j+"].w = " + grid[i][j]. w);
+			grid[i][j].w = grid[i][j].w + changed[index];
+			grid[i][j].h = grid[i][j].h + changed[index];
 		}
 	}
-	to_image();
-} 
-
-function changeGridSize(i, j, changed){
-	grid[i][j].w = grid[i][j].w + changed;
-	grid[i][j].h = grid[i][j].h + changed;
 }
 
-function to_image() {
-	var canvas = document.getElementById("showImg");
-	Canvas2Image.saveAsPNG(canvas, imgWidth, imgHeight);
-}
