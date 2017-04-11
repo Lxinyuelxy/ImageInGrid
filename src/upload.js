@@ -1,28 +1,39 @@
-document.getElementById('uploadImg').addEventListener('click', function () {
-    if (window.File && window.FileReader && window.FileList && window.Blob) ;
-    else {
-        alert('The File APIs are not fully supported in this browser.');
-        return;
-    }
+window.URL = window.URL || window.webkitURL;
 
-    var files = evt.target.files; // FileList object
-    var f = files[0];
-    if (!f.type.match('image.*')) {
-        return;
-    }
+var fileSelect = document.getElementById("fileSelect"),
+    fileElem = document.getElementById("fileElem");
 
-    var reader = new FileReader();
-    reader.onload = (function(theFile) {
-        return function(e) {
-            img.src = e.target.result;
-        };
-    })(f);
-    reader.readAsDataURL(f);
+fileSelect.addEventListener("click", function (e) {
+  if (fileElem) {
+    fileElem.click();
+  }
+  e.preventDefault(); // prevent navigation to "#"
 }, false);
+
+function handleFiles(files) {
+    if (!files.length);
+    else {
+        img.src = window.URL.createObjectURL(files[0]);
+        changeSizeOfUploadImg();
+        img.onload = function() {
+            window.URL.revokeObjectURL(this.src);
+        }  
+    }
+}
 
 document.getElementById('enterImgURL').addEventListener('keydown', function (evt) {
     if (evt.keyCode == 13) {
         var url = document.getElementById('enterImgURL').value;
         img.src = url;
+        changeSizeOfUploadImg();
     } 
 }, false);
+
+function changeSizeOfUploadImg() {
+    if(img.width >= innerWidth || img.height >= innerHeight) { //若图片超出屏幕,应该对图片压缩
+    } 
+    console.log("img.width = " + img.width);
+    console.log("img.height = " + img.height);
+    console.log("innerWidth = " + innerWidth);
+    console.log("innerHeight = " + innerHeight);
+}

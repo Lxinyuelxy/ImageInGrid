@@ -21,7 +21,8 @@
                   <div class="col-lg-6">
                       <div class="input-group">
                           <span class="input-group-btn">
-                              <button type="button" class="btn btn-primary" id="uploadImg">从本地上传</button>
+                              <input type="file" id="fileElem" accept="image/*" style="display:none" onchange="handleFiles(this.files)">
+	                          <button type="button" class="btn btn-primary" id="fileSelect">从本地上传</button>
                           </span>
                           <input type="text" class="form-control" id = "enterImgURL" placeholder="图片URL">
                       </div>

@@ -16,7 +16,7 @@ img.addEventListener('load', function() {
   setup();
   draw();
 }, false);
-img.src = './Image/1.jpg';
+img.src = './Image/8.jpg';
 
 document.getElementById('showImg').addEventListener('click', function () {
 	changeGridSize();
@@ -38,11 +38,6 @@ function setup() {
 			grid[i][j] = new Grid(originsizeOfGrid, 0, 0);
 		}
 	}
-
-	// console.log("showImg.height = " + img.height);
-	// console.log("showImg.width = " + img.width);
-	// console.log("rows = " + rows);
-	// console.log("cols = " + cols);
 }
 
 function draw() {	
