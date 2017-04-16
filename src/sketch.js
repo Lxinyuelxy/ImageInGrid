@@ -161,10 +161,10 @@ function getOriginSizeOfGrid(i, j) {
 }
 
 function changeGridSize(){
-	var changed = [-1, 1, -2, 2, 0.5, -0.5];
+	var changed = [-1, 1, 0.5, -0.5, -1.5, 1,5, 0];
 	for(var i = 0; i < rows; i++) {
 		for(var j = 0; j < cols; j++) {
-			var index = Math.floor((Math.random()*10) % changed.length);
+			var index = Math.floor(Math.random() * changed.length);
 			grid[i][j].w = grid[i][j].w + changed[index];
 			grid[i][j].h = grid[i][j].h + changed[index];
 		}

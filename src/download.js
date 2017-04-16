@@ -1,5 +1,4 @@
-function to_image() {
-    
+
+document.getElementById('downloadImg').addEventListener('click', function(){
 	Canvas2Image.saveAsPNG(showImg, imgWidth, imgHeight);
-}
-document.getElementById('downloadImg').addEventListener('click', to_image);
+});
